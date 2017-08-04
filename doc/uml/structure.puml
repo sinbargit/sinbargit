@@ -1,0 +1,15 @@
+@startuml
+
+package "node middleware"{
+   [node]
+}
+
+package "server" as h{
+[node] - [Jersey]: "token"
+[Jersey] --> [jackrebbit]
+[hibernate] --> [mysql]
+[Jersey] --> [hibernate]
+}
+
+
+@enduml
