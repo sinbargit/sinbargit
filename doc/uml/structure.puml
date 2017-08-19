@@ -6,10 +6,12 @@ package "node middleware"{
 
 package "server" as h{
 [node] - [Jersey]: "token"
-[Jersey] --> [jackrebbit]
+
 [hibernate] --> [mysql]
 [Jersey] --> [hibernate]
 }
-
-
+package "content"{
+ [Jersey] --> [jackrebbit]:RSA token
+ [jackrebbit]
+}
 @enduml
