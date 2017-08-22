@@ -1,0 +1,30 @@
+----------------------------------------------------------------
+2017-08-21 05:47:06.207 GMT:
+ Booting Derby version The Apache Software Foundation - Apache Derby - 10.5.3.0 - (802917): instance a816c00e-015e-0354-8b5a-000006f0b028
+on database directory E:\xiaobai\sinbargit.github.io\jackrabbit\version\db  
+
+Database Class Loader started - derby.database.classpath=''
+----------------------------------------------------------------
+2017-08-21 05:47:12.627 GMT:
+ Booting Derby version The Apache Software Foundation - Apache Derby - 10.5.3.0 - (802917): instance 9a4840c2-015e-0354-8b5a-000006f0b028
+on database directory E:\xiaobai\sinbargit.github.io\jackrabbit\workspaces\default\db  
+
+Database Class Loader started - derby.database.classpath=''
+----------------------------------------------------------------
+2017-08-21 05:47:18.339 GMT:
+ Booting Derby version The Apache Software Foundation - Apache Derby - 10.5.3.0 - (802917): instance 247b4177-015e-0354-8b5a-000006f0b028
+on database directory E:\xiaobai\sinbargit.github.io\jackrabbit\workspaces\security\db  
+
+Database Class Loader started - derby.database.classpath=''
+
+2017-08-21 06:25:35.566 GMT:
+Shutting down instance 9a4840c2-015e-0354-8b5a-000006f0b028
+----------------------------------------------------------------
+
+2017-08-21 06:25:36.267 GMT:
+Shutting down instance 247b4177-015e-0354-8b5a-000006f0b028
+----------------------------------------------------------------
+
+2017-08-21 06:25:37.231 GMT:
+Shutting down instance a816c00e-015e-0354-8b5a-000006f0b028
+----------------------------------------------------------------
