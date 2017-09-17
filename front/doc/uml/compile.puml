@@ -1,0 +1,15 @@
+@startuml
+package "uncompile" {
+cloud header as h{
+[Common Header]
+[Custom Header]
+}
+cloud footer as f{
+[Common Footer]
+[Custom Footer]
+}
+h -> [Body]
+[Body] <- f
+}
+
+@enduml
