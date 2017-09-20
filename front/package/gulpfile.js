@@ -60,8 +60,8 @@ gulp.task('head',["clean"], function(cb) {
         {
             let count = 0;
             list.forEach((v,_,arr)=>{
-                let pageDir = path.join(appRootDir,"template/page",v,"html/body.art");
-                gulp.src(pageDir).pipe(rename(v+'.art')).pipe(head(v)).pipe(gulp.dest(path.join(appRootDir,"template/dest"))).on('finish',function () {
+                let pageDir = path.join(appRootDir,"template/page",v,"html/body.tpl");
+                gulp.src(pageDir).pipe(rename(v+'.tpl')).pipe(head(v)).pipe(gulp.dest(path.join(appRootDir,"template/dest"))).on('finish',function () {
                     ++count === arr.length&&cb()
                 });
             })
@@ -76,9 +76,11 @@ gulp.task('other',["head"], function(cb) {
             let count = 0;
             list.forEach((v,_,arr)=>{
                 let pageDir = path.join(appRootDir,"template/dest",v);
-                gulp.src(pageDir,{base:'./'}).pipe(foot(v.replace(/.art$/,""))).pipe(gulp.dest('./')).on('finish',function () {
-                    gulp.src(pageDir,{base:'./'}).pipe(inject.wrap('<!doctype html>\n<html>\n','</html>')).pipe(template(compile)).pipe(gulp.dest('./')).on('finish',function () {
-                        ++count === arr.length&&cb()
+                gulp.src(pageDir,{base:'./'}).pipe(foot(v.replace(/.tpl$/,""))).pipe(gulp.dest('./')).on('finish',function () {
+                    gulp.src(pageDir,{base:'./'}).pipe(inject.wrap('<!doctype html>\n<html>\n','</html>')).pipe(template(compile)).pipe(rename(v.replace(/.tpl$/,".html"))).pipe(gulp.dest(path.join(appRootDir,"template/dest"))).on('finish',function () {
+                        gulp.src(pageDir,{read: false}).pipe(gulpclean({force: true})).on('finish',()=>{
+                            ++count === arr.length&&cb()
+                        })
                     })
                 });
             })

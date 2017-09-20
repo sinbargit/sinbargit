@@ -21,7 +21,7 @@ router.get("*", (req, resp, next) => {
     }
     resp.setHeader('Content-Type', 'text/html');
     const modelPath = __dirname + '/../template/page/' + name + '/controller';
-    const htmlPath = __dirname + '/../template/dest/' + name + '.art';
+    const htmlPath = __dirname + '/../template/dest/' + name + '.tpl';
 
     const hisCache = new HisCache(name,resp);
     hisCache.planB = function()

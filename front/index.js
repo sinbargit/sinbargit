@@ -2,7 +2,7 @@ const fs = require('fs');
 const express = require('express');
 const helmet = require('helmet');
 const compression = require('compression');
-const expressVue = require('express-vue');
+const reactView = require('express-react-views')
 //HTTP LOG
 const httpLog = require('morgan');
 const bodyParser = require('body-parser');

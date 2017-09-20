@@ -8,8 +8,8 @@ let config = require('../config')
 module.exports = function (page) {
     'use strict';
 
-    let commonFootDir = path.join(appRootDir, "template", 'common', "html/foot.art");
-    let footDir = path.join(appRootDir, "template/page", page, "html/foot.art");
+    let commonFootDir = path.join(appRootDir, "template", 'common', "html/footer.tpl");
+    let footDir = path.join(appRootDir, "template/page", page, "html/footer.tpl");
     let foot = '\n'+fs.readFileSync(commonFootDir)+fs.readFileSync(footDir)+'\n';
     return inject.append(foot);
 }
