@@ -1,12 +1,20 @@
-import ReactDom from 'react-dom';
-import React from 'react';
+const fetch = require('isomorphic-fetch');
 
-class Root extends React.Component{
-    constructor(props)
-    {
-        super(props);
-    }
-    render(){
-        return (<div class="container"><aside>{this.props.tree}</aside><article>{this.props.article}</article></div>);
-    }
+module.exports=function (req,resp) {
+    return new Promise(function (resolve) {
+        fetch("//127.0.0.1:8080/resource/admin/root", {
+            method: "GET",
+            headers: {
+                "ps": "admin"
+            }
+        }).then((res) =>
+        {
+            if (res.status == "200") {
+                res.text().then(function (data)
+                {
+                    resolve(data)
+                });
+            }
+        });
+    })
 }

@@ -1,1 +1,5 @@
-console.log("HELLO IQIYI")
+import Vue from 'vue';
+
+new Vue({
+    el: '#app'
+})

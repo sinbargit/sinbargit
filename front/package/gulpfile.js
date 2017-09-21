@@ -11,6 +11,8 @@ const template = require('gulp-template');
 const config = require('../config');
 const uglify = require('gulp-uglify');
 const cleanCSS = require('gulp-clean-css');
+const babel = require('gulp-babel');
+
 let sourcemaps = require('gulp-sourcemaps');
 
 let compile = {cdn:config.cdn};
@@ -39,7 +41,9 @@ gulp.task('compressCss',() => {
 
 gulp.task('compressJs',() => {
     const url = path.join(appRootDir,"/resource/**/js/");
-    let stream = gulp.src([url+'*.js',"!"+url+"*.min.js"],{base: "./"});
+    let stream = gulp.src([url+'*.js',"!"+url+"*.min.js"],{base: "./"}).pipe(babel({
+        presets: ['env']
+    }));
     if(process.env.NODE_ENV !== "production")
     {
         stream = stream.pipe(sourcemaps.init()).pipe(uglify()).pipe(sourcemaps.write());
@@ -77,7 +81,7 @@ gulp.task('other',["head"], function(cb) {
             list.forEach((v,_,arr)=>{
                 let pageDir = path.join(appRootDir,"template/dest",v);
                 gulp.src(pageDir,{base:'./'}).pipe(foot(v.replace(/.tpl$/,""))).pipe(gulp.dest('./')).on('finish',function () {
-                    gulp.src(pageDir,{base:'./'}).pipe(inject.wrap('<!doctype html>\n<html>\n','</html>')).pipe(template(compile)).pipe(rename(v.replace(/.tpl$/,".html"))).pipe(gulp.dest(path.join(appRootDir,"template/dest"))).on('finish',function () {
+                    gulp.src(pageDir,{base:'./'}).pipe(inject.wrap('<html>\n','</html>')).pipe(template(compile)).pipe(rename({extname:'.html'})).pipe(gulp.dest('./')).on('finish',function () {
                         gulp.src(pageDir,{read: false}).pipe(gulpclean({force: true})).on('finish',()=>{
                             ++count === arr.length&&cb()
                         })

@@ -14,11 +14,11 @@ public class Resource {
     private static Session session = null;
     private static UserManager userManager = null;
 
-    @Path("hello")
+    @Path("home")
     @GET
     @Produces(MediaType.TEXT_PLAIN)
-    public String hello() throws Exception {
-        return "hello wolrd! ";
+    public String home() throws Exception {
+        return "hello world!";
     }
 
     @Path("/{name}/{path}")
@@ -27,7 +27,14 @@ public class Resource {
       this.checkUser(name,ps);
       Session session = getRepository().login(new SimpleCredentials(name,ps.toCharArray()));
       Node root = session.getRootNode();
-      return  root.getNode(path).getName();
+      if(path.equals("root"))
+      {
+          return root.getProperty("welcome").getString();
+      }
+      else
+      {
+          return  root.getNode(path).getName();
+      }
     }
 
     @Path("/{name}/{path}")
