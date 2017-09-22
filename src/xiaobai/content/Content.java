@@ -1,4 +1,5 @@
 package xiaobai.content;
+import javax.jcr.Node;
 import javax.jcr.Repository;
 import javax.jcr.Session;
 import javax.jcr.SimpleCredentials;
@@ -11,7 +12,7 @@ import org.apache.jackrabbit.rmi.server.ServerAdapterFactory;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.apache.log4j.BasicConfigurator;
-import xiaobai.content.setcontent.SetRoot;
+import xiaobai.content.service.UserService;
 
 public class Content {
     public static void main(String[] args) throws Exception
@@ -22,7 +23,15 @@ public class Content {
         Repository repository = JcrUtils.getRepository();
         Session session = repository.login(
                 new SimpleCredentials("admin", "admin".toCharArray()));
-        new SetRoot(session).setRoot();
+        UserService adminS = new UserService(session);
+        Node root = session.getRootNode();
+       // adminS.removeUser("xiaobai");
+        adminS.createUser("xiaobai","201314",root);
+        Session xiaobai = repository.login(new SimpleCredentials("xiaobai", "201314".toCharArray()));
+        UserService xiaobaiS = new UserService(xiaobai);
+        xiaobaiS.setRoot();
+        xiaobaiS.sessionOut();
+        adminS.sessionOut();
         LocateRegistry.createRegistry(9000);
         String name = "rmi://localhost:9000/content";
         RemoteAdapterFactory factory = new ServerAdapterFactory();
