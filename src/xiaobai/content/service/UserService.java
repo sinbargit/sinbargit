@@ -1,17 +1,17 @@
 package xiaobai.content.service;
 
 import javax.jcr.*;
+import javax.jcr.nodetype.NodeType;
 import javax.jcr.security.*;
-
 import org.apache.jackrabbit.api.JackrabbitSession;
+import org.apache.jackrabbit.api.security.JackrabbitAccessControlList;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
-import org.apache.jackrabbit.core.SessionImpl;
-import org.apache.jackrabbit.core.security.authorization.AccessControlEntryImpl;
 import org.apache.jackrabbit.core.security.principal.PrincipalImpl;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.HashMap;
-import java.util.Map;
 
 public class UserService {
     private Session session;
@@ -27,7 +27,16 @@ public class UserService {
     {
         Node root = session.getRootNode();
         root.setProperty("welcome", "Hello, World!");
-        Node hello = root.addNode("helloo");
+        this.session.save();
+    }
+    public void setIndex() throws Exception
+    {
+        Node root = session.getRootNode();
+        Node index = root.addNode("index", NodeType.NT_RESOURCE);
+        String currentDir = System.getProperty("user.dir");
+        InputStream stream = new FileInputStream("src/xiaobai/content/index.md");
+        Binary binary = session.getValueFactory().createBinary(stream);
+        index.setProperty("content",binary);
         this.session.save();
     }
     public boolean createUser(String name,String password,Node root) throws Exception {
@@ -35,19 +44,11 @@ public class UserService {
         if(userManager.getAuthorizable(name)==null)
         {
             userManager.createUser(name,password);
-            AccessControlManager acm = ((SessionImpl) this.session).getAccessControlManager();
-            acm.setPolicy();
-            AccessControlList accessList = new AccessControlEntryImpl(new PrincipalImpl(name),acm.privilegeFromName(Privilege.JCR_ALL),true,new HashMap());
-            AccessControlPolicy policy = AccessControlList
-            AccessControlPolicyIterator acpi = acm.getApplicablePolicies(root.getPath());
-            while (acpi.hasNext()) {
-                AccessControlPolicy acp = acpi.nextAccessControlPolicy();
-                Privilege[] privileges = new Privilege[] { acm.privilegeFromName(Privilege.JCR_ALL) };
-
-                ((AccessControlList) acp).addAccessControlEntry(new PrincipalImpl(name), privileges);
-                acm.setPolicy(root.getPath(), acp);
-            }
-
+            AccessControlManager acm = this.session.getAccessControlManager();
+            JackrabbitAccessControlList  jacl = (JackrabbitAccessControlList)acm.getPolicies(root.getPath())[0];
+            Privilege[] privileges = new Privilege[] { acm.privilegeFromName(Privilege.JCR_ALL) };
+            jacl.addEntry(new PrincipalImpl(name),privileges, true, new HashMap());
+            acm.setPolicy(root.getPath(),jacl);
             this.session.save();
             return true;
         }
@@ -78,5 +79,4 @@ public class UserService {
         }
         return this.userManager;
     }
-
 }

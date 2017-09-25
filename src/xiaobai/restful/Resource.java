@@ -23,17 +23,17 @@ public class Resource {
 
     @Path("/{name}/{path}")
     @GET
-    public String get(@PathParam("name") String name, @HeaderParam("ps") String ps,@PathParam("path") String path) throws Exception {
+    public Binary get(@PathParam("name") String name, @HeaderParam("ps") String ps,@PathParam("path") String path) throws Exception {
      // this.checkUser(name,ps);
       Session session = getRepository().login(new SimpleCredentials("xiaobai","201314".toCharArray()));
       Node root = session.getRootNode();
       if(path.equals("root"))
       {
-          return root.getProperty("welcome").getString();
+          return  root.getNode("index").getProperty("content").getBinary();
       }
       else
       {
-          return  root.getNode(path).getName();
+          return  root.getNode(path).getProperty("content").getBinary();
       }
     }
 

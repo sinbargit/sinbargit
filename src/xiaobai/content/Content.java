@@ -25,13 +25,14 @@ public class Content {
                 new SimpleCredentials("admin", "admin".toCharArray()));
         UserService adminS = new UserService(session);
         Node root = session.getRootNode();
-       // adminS.removeUser("xiaobai");
+        adminS.removeUser("xiaobai");
         adminS.createUser("xiaobai","201314",root);
+        adminS.sessionOut();
         Session xiaobai = repository.login(new SimpleCredentials("xiaobai", "201314".toCharArray()));
         UserService xiaobaiS = new UserService(xiaobai);
         xiaobaiS.setRoot();
+        xiaobaiS.setIndex();
         xiaobaiS.sessionOut();
-        adminS.sessionOut();
         LocateRegistry.createRegistry(9000);
         String name = "rmi://localhost:9000/content";
         RemoteAdapterFactory factory = new ServerAdapterFactory();
