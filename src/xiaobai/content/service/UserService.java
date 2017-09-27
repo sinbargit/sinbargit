@@ -32,11 +32,12 @@ public class UserService {
     public void setIndex() throws Exception
     {
         Node root = session.getRootNode();
-        Node index = root.addNode("index", NodeType.NT_RESOURCE);
-        String currentDir = System.getProperty("user.dir");
+        Node index = root.addNode("index", NodeType.NT_FOLDER);
+        Node file = index.addNode("content",NodeType.NT_FILE);
         InputStream stream = new FileInputStream("src/xiaobai/content/index.md");
         Binary binary = session.getValueFactory().createBinary(stream);
-        index.setProperty("content",binary);
+        Node content = file.addNode(Node.JCR_CONTENT,NodeType.NT_RESOURCE);
+        content.setProperty(Property.JCR_DATA,binary);
         this.session.save();
     }
     public boolean createUser(String name,String password,Node root) throws Exception {

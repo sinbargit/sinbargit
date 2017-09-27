@@ -7,6 +7,7 @@ import org.apache.jackrabbit.rmi.client.ClientRepositoryFactory;
 import javax.jcr.*;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.io.InputStream;
 
 @Path("resource")
 public class Resource {
@@ -23,17 +24,17 @@ public class Resource {
 
     @Path("/{name}/{path}")
     @GET
-    public Binary get(@PathParam("name") String name, @HeaderParam("ps") String ps,@PathParam("path") String path) throws Exception {
+    public InputStream get(@PathParam("name") String name, @HeaderParam("ps") String ps, @PathParam("path") String path) throws Exception {
      // this.checkUser(name,ps);
       Session session = getRepository().login(new SimpleCredentials("xiaobai","201314".toCharArray()));
       Node root = session.getRootNode();
       if(path.equals("root"))
       {
-          return  root.getNode("index").getProperty("content").getBinary();
+          return  root.getNode("index/content").getNode(Node.JCR_CONTENT).getProperty(Property.JCR_DATA).getBinary().getStream();
       }
       else
       {
-          return  root.getNode(path).getProperty("content").getBinary();
+          return  root.getNode(path).getNode(Node.JCR_CONTENT).getProperty(Property.JCR_DATA).getBinary().getStream();
       }
     }
 
