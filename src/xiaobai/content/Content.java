@@ -1,8 +1,5 @@
 package xiaobai.content;
-import javax.jcr.Node;
-import javax.jcr.Repository;
-import javax.jcr.Session;
-import javax.jcr.SimpleCredentials;
+import javax.jcr.*;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.Naming;
 import org.apache.jackrabbit.commons.JcrUtils;
@@ -27,11 +24,17 @@ public class Content {
         Node root = session.getRootNode();
         adminS.removeUser("xiaobai");
         adminS.createUser("xiaobai","201314",root);
-        adminS.sessionOut();
         Session xiaobai = repository.login(new SimpleCredentials("xiaobai", "201314".toCharArray()));
         UserService xiaobaiS = new UserService(xiaobai);
         xiaobaiS.setRoot();
-        xiaobaiS.setIndex();
+        Node content = xiaobaiS.setIndex();
+        Node ttt =  xiaobai.getRootNode().getNode("index/content");
+        PropertyIterator it = ttt.getProperties();
+        System.out.println(ttt.getName()+"---"+ttt.getParent().getName()+"---"+ttt.getPath());
+        while (it.hasNext())
+        {
+            System.out.println(it.nextProperty().getName()+"---+++++---*------------");
+        }
         xiaobaiS.sessionOut();
         LocateRegistry.createRegistry(9000);
         String name = "rmi://localhost:9000/content";

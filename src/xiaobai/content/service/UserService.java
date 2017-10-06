@@ -29,16 +29,36 @@ public class UserService {
         root.setProperty("welcome", "Hello, World!");
         this.session.save();
     }
-    public void setIndex() throws Exception
+    private Node addNodeWithoutSNS(Node node,String name,String type) throws RepositoryException {
+        if(node.getNodes(name).getSize()!=0)
+        {
+            return node.getNode(name);
+        }
+        else
+        {
+            return node.addNode(name,type);
+        }
+    }
+    public Node setIndex() throws Exception
     {
         Node root = session.getRootNode();
-        Node index = root.addNode("index", NodeType.NT_FOLDER);
-        Node file = index.addNode("content",NodeType.NT_FILE);
+        Node index = addNodeWithoutSNS(root,"index", NodeType.NT_FOLDER);
+        Node file = addNodeWithoutSNS(index,"content",NodeType.NT_FILE);
         InputStream stream = new FileInputStream("src/xiaobai/content/index.md");
         Binary binary = session.getValueFactory().createBinary(stream);
         Node content = file.addNode(Node.JCR_CONTENT,NodeType.NT_RESOURCE);
         content.setProperty(Property.JCR_DATA,binary);
+        file.addMixin(NodeType.MIX_MIMETYPE);
+        file.setProperty(Property.JCR_MIMETYPE,"md");
         this.session.save();
+        Node ttt =  root.getNode("index/content");
+        PropertyIterator it = ttt.getProperties();
+        System.out.println(file.getPath()+"***********----***********");
+        while (it.hasNext())
+        {
+            System.out.println(it.nextProperty().getName()+"---00000---*------------");
+        }
+        return file;
     }
     public boolean createUser(String name,String password,Node root) throws Exception {
         UserManager userManager = this.getUserManager();
