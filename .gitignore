@@ -2,3 +2,7 @@
 target/
 jackrabbit/
 node_modules/
+*.log
+*.log
+derby.log
+front/resource/common/js/common.min.js

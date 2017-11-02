@@ -81,7 +81,7 @@ gulp.task('other',["head"], function(cb) {
             list.forEach((v,_,arr)=>{
                 let pageDir = path.join(appRootDir,"template/dest",v);
                 gulp.src(pageDir,{base:'./'}).pipe(foot(v.replace(/.tpl$/,""))).pipe(gulp.dest('./')).on('finish',function () {
-                    gulp.src(pageDir,{base:'./'}).pipe(inject.wrap('<html>\n','</html>')).pipe(template(compile)).pipe(rename({extname:'.html'})).pipe(gulp.dest('./')).on('finish',function () {
+                    gulp.src(pageDir,{base:'./'}).pipe(inject.wrap('<!DOCTYPE html>\n<html>\n','</html>')).pipe(template(compile)).pipe(rename({extname:'.html'})).pipe(gulp.dest('./')).on('finish',function () {
                         gulp.src(pageDir,{read: false}).pipe(gulpclean({force: true})).on('finish',()=>{
                             ++count === arr.length&&cb()
                         })

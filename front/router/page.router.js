@@ -62,7 +62,7 @@ router.get("*", (req, resp, next) => {
                 }
                 else
                 {
-                    self.doneB('<!DOCTYPE html>'+html);
+                    self.doneB(html);
                     redis.set(name, html, 'EX', config.redis.expire / 1000);
                 }
             });

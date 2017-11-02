@@ -1,3 +1,3 @@
 <div id="app">
-    <aside></aside><article>{{article}}</article>
+    <aside></aside><article></article>
 </div>

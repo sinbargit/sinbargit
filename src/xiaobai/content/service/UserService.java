@@ -30,7 +30,7 @@ public class UserService {
         this.session.save();
     }
     private Node addNodeWithoutSNS(Node node,String name,String type) throws RepositoryException {
-        if(node.getNodes(name).getSize()!=0)
+        if(node.hasNode(name))
         {
             return node.getNode(name);
         }
@@ -39,27 +39,38 @@ public class UserService {
             return node.addNode(name,type);
         }
     }
-    public Node setIndex() throws Exception
+    public Node set(String type,String path,String name,Node parent) throws Exception
     {
-        Node root = session.getRootNode();
-        Node index = addNodeWithoutSNS(root,"index", NodeType.NT_FOLDER);
+        Node index = addNodeWithoutSNS(parent,name, NodeType.NT_FOLDER);
         Node file = addNodeWithoutSNS(index,"content",NodeType.NT_FILE);
-        InputStream stream = new FileInputStream("src/xiaobai/content/index.md");
+        InputStream stream = new FileInputStream(path);
         Binary binary = session.getValueFactory().createBinary(stream);
-        Node content = file.addNode(Node.JCR_CONTENT,NodeType.NT_RESOURCE);
+        Node content = addNodeWithoutSNS(file,Node.JCR_CONTENT,NodeType.NT_RESOURCE);
         content.setProperty(Property.JCR_DATA,binary);
         file.addMixin(NodeType.MIX_MIMETYPE);
-        file.setProperty(Property.JCR_MIMETYPE,"md");
+        file.setProperty(Property.JCR_MIMETYPE,type);
         this.session.save();
-        Node ttt =  root.getNode("index/content");
-        PropertyIterator it = ttt.getProperties();
-        System.out.println(file.getPath()+"***********----***********");
-        while (it.hasNext())
-        {
-            System.out.println(it.nextProperty().getName()+"---00000---*------------");
-        }
         return file;
     }
+    public void delete(String path) throws Exception
+    {
+        Node root = session.getRootNode();
+        root.getNode(path).removeShare();
+    }
+//    public Node setIndex() throws Exception
+//    {
+//        Node root = session.getRootNode();
+//        Node index = addNodeWithoutSNS(root,"index", NodeType.NT_FOLDER);
+//        Node file = addNodeWithoutSNS(index,"content",NodeType.NT_FILE);
+//        InputStream stream = new FileInputStream("src/xiaobai/content/index.md");
+//        Binary binary = session.getValueFactory().createBinary(stream);
+//        Node content = addNodeWithoutSNS(file,Node.JCR_CONTENT,NodeType.NT_RESOURCE);
+//        content.setProperty(Property.JCR_DATA,binary);
+//        file.addMixin(NodeType.MIX_MIMETYPE);
+//        file.setProperty(Property.JCR_MIMETYPE,"md");
+//        this.session.save();
+//        return file;
+//    }
     public boolean createUser(String name,String password,Node root) throws Exception {
         UserManager userManager = this.getUserManager();
         if(userManager.getAuthorizable(name)==null)

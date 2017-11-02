@@ -18,23 +18,16 @@ public class Content {
         // Set up a simple configuration that logs on the console.
         BasicConfigurator.configure();
         Repository repository = JcrUtils.getRepository();
-        Session session = repository.login(
-                new SimpleCredentials("admin", "admin".toCharArray()));
-        UserService adminS = new UserService(session);
-        Node root = session.getRootNode();
-        adminS.removeUser("xiaobai");
-        adminS.createUser("xiaobai","201314",root);
+//        Session session = repository.login(
+//                new SimpleCredentials("admin", "admin".toCharArray()));
+//        UserService adminS = new UserService(session);
+//        adminS.removeUser("xiaobai");
+//        adminS.createUser("xiaobai","201314",root);
         Session xiaobai = repository.login(new SimpleCredentials("xiaobai", "201314".toCharArray()));
+        Node root = xiaobai.getRootNode();
         UserService xiaobaiS = new UserService(xiaobai);
         xiaobaiS.setRoot();
-        Node content = xiaobaiS.setIndex();
-        Node ttt =  xiaobai.getRootNode().getNode("index/content");
-        PropertyIterator it = ttt.getProperties();
-        System.out.println(ttt.getName()+"---"+ttt.getParent().getName()+"---"+ttt.getPath());
-        while (it.hasNext())
-        {
-            System.out.println(it.nextProperty().getName()+"---+++++---*------------");
-        }
+        xiaobaiS.set("md","src/xiaobai/content/index.md","index",root);
         xiaobaiS.sessionOut();
         LocateRegistry.createRegistry(9000);
         String name = "rmi://localhost:9000/content";
