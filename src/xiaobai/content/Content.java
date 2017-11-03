@@ -27,7 +27,8 @@ public class Content {
         Node root = xiaobai.getRootNode();
         UserService xiaobaiS = new UserService(xiaobai);
         xiaobaiS.setRoot();
-        xiaobaiS.set("md","src/xiaobai/content/index.md","index",root);
+        Node index = xiaobaiS.set("index");
+        xiaobaiS.set("index","src/xiaobai/content/index.md",index,"md");
         xiaobaiS.sessionOut();
         LocateRegistry.createRegistry(9000);
         String name = "rmi://localhost:9000/content";

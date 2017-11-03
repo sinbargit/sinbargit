@@ -39,18 +39,33 @@ public class UserService {
             return node.addNode(name,type);
         }
     }
-    public Node set(String type,String path,String name,Node parent) throws Exception
+    public Node set(String name) throws Exception
     {
-        Node index = addNodeWithoutSNS(parent,name, NodeType.NT_FOLDER);
-        Node file = addNodeWithoutSNS(index,"content",NodeType.NT_FILE);
-        InputStream stream = new FileInputStream(path);
-        Binary binary = session.getValueFactory().createBinary(stream);
-        Node content = addNodeWithoutSNS(file,Node.JCR_CONTENT,NodeType.NT_RESOURCE);
-        content.setProperty(Property.JCR_DATA,binary);
-        file.addMixin(NodeType.MIX_MIMETYPE);
-        file.setProperty(Property.JCR_MIMETYPE,type);
+        return set(name,NodeType.NT_FOLDER,session.getRootNode(),null,null);
+    }
+    public Node set(String name,String path,Node parent,String ext) throws Exception
+    {
+        return set(name,NodeType.NT_FILE,parent,path,ext);
+    }
+    public Node set(String name,String type,Node parent,String path,String ext) throws Exception
+    {
+        Node node;
+        if(NodeType.NT_FOLDER.equals(type))
+        {
+            node = addNodeWithoutSNS(parent,name, NodeType.NT_FOLDER);
+        }
+        else
+        {
+            node = addNodeWithoutSNS(parent,name, NodeType.NT_FILE);
+            InputStream stream = new FileInputStream(path);
+            Binary binary = session.getValueFactory().createBinary(stream);
+            Node content = addNodeWithoutSNS(node,Node.JCR_CONTENT,NodeType.NT_RESOURCE);
+            content.setProperty(Property.JCR_DATA,binary);
+            node.addMixin(NodeType.MIX_MIMETYPE);
+            node.setProperty(Property.JCR_MIMETYPE,ext);
+        }
         this.session.save();
-        return file;
+        return node;
     }
     public void delete(String path) throws Exception
     {

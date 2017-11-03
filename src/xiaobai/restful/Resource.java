@@ -3,6 +3,7 @@ package xiaobai.restful;
 import org.apache.jackrabbit.rmi.client.ClientRepositoryFactory;
 
 import javax.jcr.*;
+import javax.jcr.nodetype.NodeType;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObjectBuilder;
@@ -30,20 +31,41 @@ public class Resource {
         Session session = getRepository().login(new SimpleCredentials("xiaobai", "201314".toCharArray()));
         Node root = session.getRootNode();
         Node node = root.getNode(path);
-        NodeIterator siblings = node.getParent().getNodes();
-        JsonObjectBuilder jsonBuild  = Json.createObjectBuilder();
-        JsonArrayBuilder arrBuild = Json.createArrayBuilder();
-        while(siblings.hasNext())
+        JsonObjectBuilder wrap  = Json.createObjectBuilder();
+        if(node.isNodeType(NodeType.NT_FOLDER))
         {
-            JsonObjectBuilder t = Json.createObjectBuilder();
-            Node temp = siblings.nextNode();
-            temp.getProperties().nextProperty().getString();
-            t.add(temp.getName(),temp.getProperty(Property.JCR_MIMETYPE).getString());
-            arrBuild.add(t);
+            NodeIterator children = node.getNodes();
+            JsonArrayBuilder arr = Json.createArrayBuilder();
+            while(children.hasNext())
+            {
+                JsonObjectBuilder item  = Json.createObjectBuilder();
+                Node child = children.nextNode();
+                item.add("name",child.getName());
+                if(child.isNodeType(NodeType.NT_FOLDER))
+                {
+                    item.add("type","folder");
+                }
+                else if(child.isNodeType(NodeType.NT_FILE))
+                {
+                    item.add("type","file");
+                    item.add("ext",child.getProperty(Property.JCR_MIMETYPE).getString());
+                }
+                arr.add(item);
+            }
+            return arr.build().toString();
         }
-        jsonBuild.add("sibings",arrBuild);
-        jsonBuild.add("article",root.getNode(path).getNode(Node.JCR_CONTENT).getProperty(Property.JCR_DATA).getString());
-        return jsonBuild.build().toString();
+        else if(node.isNodeType(NodeType.NT_FILE))
+        {
+            wrap.add("name",node.getName());
+            wrap.add("ext",node.getProperty(Property.JCR_MIMETYPE).getString());
+            wrap.add("content",node.getNode(Node.JCR_CONTENT).getProperty(Property.JCR_DATA).getString());
+            wrap.add("type","file");
+            return wrap.build().toString();
+        }
+        else
+        {
+            return "{}";
+        }
     }
 
     @Path("/{name}/{path}")
