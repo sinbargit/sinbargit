@@ -56,9 +56,9 @@ public class UserService {
         }
         else
         {
-            node = addNodeWithoutSNS(parent,name, NodeType.NT_FILE);
             InputStream stream = new FileInputStream(path);
             Binary binary = session.getValueFactory().createBinary(stream);
+            node = addNodeWithoutSNS(parent,name, NodeType.NT_FILE);
             Node content = addNodeWithoutSNS(node,Node.JCR_CONTENT,NodeType.NT_RESOURCE);
             content.setProperty(Property.JCR_DATA,binary);
             node.addMixin(NodeType.MIX_MIMETYPE);
@@ -71,6 +71,7 @@ public class UserService {
     {
         Node root = session.getRootNode();
         root.getNode(path).removeShare();
+        this.session.save();
     }
 //    public Node setIndex() throws Exception
 //    {

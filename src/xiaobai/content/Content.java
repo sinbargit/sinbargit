@@ -51,51 +51,54 @@ public class Content {
         options.addOption(delete);
         Scanner scanner=new Scanner(System.in);
         System.out.println("cli start");
-        while (scanner.hasNext())
+        while (scanner.hasNextLine())
         {
-            String commend = scanner.nextLine();
-            String[] params = commend.split(" +");
-            CommandLineParser parser = new DefaultParser();
-            CommandLine cl = parser.parse(options,params);
-            if(cl.hasOption("init"))
-            {
-                Session session = repository.login(
-                        new SimpleCredentials("admin", "admin".toCharArray()));
-                UserService adminS = new UserService(session);
-                Node root = session.getRootNode();
-                adminS.removeUser("xiaobai");
-                adminS.createUser("xiaobai","201314",root);
-            }
-            else if(cl.hasOption("add"))
-            {
-                UserService xiaobaiS = getXiaobaiS(repository);
-                xiaobaiS.setRoot();
-                Node index = xiaobaiS.set("index");
-                String[] keys =  cl.getOptions()[0].getValues();
-                Node root = getXiaobai(repository).getRootNode();
-                Node node = null;
-                if(keys[2].equals("/"))
+            try {
+                String commend = scanner.nextLine();
+                String[] params = commend.split(" +");
+                CommandLineParser parser = new DefaultParser();
+                CommandLine cl = parser.parse(options,params);
+                if(cl.hasOption("init"))
                 {
-                    node = root;
+                    Session session = repository.login(
+                            new SimpleCredentials("admin", "admin".toCharArray()));
+                    UserService adminS = new UserService(session);
+                    Node root = session.getRootNode();
+                    adminS.removeUser("xiaobai");
+                    adminS.createUser("xiaobai","201314",root);
                 }
-                else
+                else if(cl.hasOption("add"))
                 {
-                    node = root.getNode(keys[2]);
+                    UserService xiaobaiS = getXiaobaiS(repository);
+                    xiaobaiS.setRoot();
+                    String[] keys =  cl.getOptions()[0].getValues();
+                    Node root = getXiaobai(repository).getRootNode();
+                    Node node = null;
+                    if(keys[2].equals("/"))
+                    {
+                        node = root;
+                    }
+                    else
+                    {
+                        node = root.getNode(keys[2]);
+                    }
+                    xiaobaiS.set(keys[0],keys[1],node,keys[3]);
+                    xiaobaiS.sessionOut();
                 }
-                xiaobaiS.set(keys[0],keys[1],node,keys[3]);
-                xiaobaiS.sessionOut();
-            }
-            else if(cl.hasOption("delete"))
-            {
-                UserService xiaobaiS = getXiaobaiS(repository);
-                String path = cl.getOptions()[0].getValues()[0];
-                xiaobaiS.delete(path);
+                else if(cl.hasOption("delete"))
+                {
+                    UserService xiaobaiS = getXiaobaiS(repository);
+                    String path = cl.getOptions()[0].getValues()[0];
+                    xiaobaiS.delete(path);
+                }
+            }catch (Exception e){
+                logger.error(e.getMessage());
             }
         }
     }
     private static UserService getXiaobaiS(Repository repository) throws Exception
     {
-        if(xiaobaiS==null)
+        if(xiaobaiS==null||xiaobai==null||!xiaobai.isLive())
         {
             Session xiaobai = getXiaobai(repository);
             xiaobaiS = new UserService(xiaobai);
@@ -104,7 +107,7 @@ public class Content {
     }
     private static Session getXiaobai(Repository repository) throws Exception
     {
-        if(xiaobai==null)
+        if(xiaobai==null||!xiaobai.isLive())
         {
             xiaobai = repository.login(new SimpleCredentials("xiaobai", "201314".toCharArray()));
         }
