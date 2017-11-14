@@ -1,4 +1,4 @@
 <footer></footer>
-<script>
-    var data = {article:"{{article}}",sibings:"{{sibings}}"}
+<script  v-html="rawHtml">
+    var data = {{$data}};
 </script>

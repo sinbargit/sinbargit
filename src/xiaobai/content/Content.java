@@ -66,6 +66,7 @@ public class Content {
                     Node root = session.getRootNode();
                     adminS.removeUser("xiaobai");
                     adminS.createUser("xiaobai","201314",root);
+                    adminS.sessionOut();
                 }
                 else if(cl.hasOption("add"))
                 {
@@ -90,6 +91,7 @@ public class Content {
                     UserService xiaobaiS = getXiaobaiS(repository);
                     String path = cl.getOptions()[0].getValues()[0];
                     xiaobaiS.delete(path);
+                    xiaobaiS.sessionOut();
                 }
             }catch (Exception e){
                 logger.error(e.getMessage());

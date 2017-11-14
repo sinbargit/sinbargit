@@ -12,7 +12,7 @@ module.exports=function (req,resp) {
             if (res.status == "200") {
                 res.text().then(function (data)
                 {
-                    resolve({article:data})
+                    resolve(JSON.parse(data))
                 });
             }
         });

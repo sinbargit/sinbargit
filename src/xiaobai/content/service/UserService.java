@@ -39,12 +39,16 @@ public class UserService {
             return node.addNode(name,type);
         }
     }
-    public Node set(String name) throws Exception
-    {
-        return set(name,NodeType.NT_FOLDER,session.getRootNode(),null,null);
-    }
+//    public Node set(String name) throws Exception
+//    {
+//        return set(name,NodeType.NT_FOLDER,session.getRootNode(),null,null);
+//    }
     public Node set(String name,String path,Node parent,String ext) throws Exception
     {
+        if("/".equals(ext))
+        {
+            return set(name,NodeType.NT_FOLDER,parent,path,ext);
+        }
         return set(name,NodeType.NT_FILE,parent,path,ext);
     }
     public Node set(String name,String type,Node parent,String path,String ext) throws Exception
